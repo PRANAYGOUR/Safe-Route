@@ -1,0 +1,25 @@
+- [x] Planning
+  - [x] Review requirements and define architecture
+  - [x] Choose technology stack (Leaflet, ORS, Groq, Supabase)
+  - [x] Draft implementation plan and get user approval
+
+- [x] Implementation
+  - [x] Scaffold project structure (HTML, CSS, JS, sw)
+  - [x] Implement authentication with Supabase
+  - [x] Implement core services (GPS, Risk, Halt, Groq, SOS, Voice, Power)
+  - [x] Build main app router and screen manager
+  - [x] Build Screens (Home, Journey, Tracking, SafeZones, etc.)
+  - [x] Add simulation mode UI
+  - [x] Write Supabase SQL schema
+  - [x] Refine UX: Early GPS prompt & Contact onboarding
+  - [x] Fix Location Permissions (Redundancy & HTTPS constraints)
+  - [x] Improve Mobile Location UX (Feedback & Bypass)
+  - [ ] Document setup
+
+- [/] Verification
+  - [x] Fix ReferenceError: L is not defined
+  - [x] Stop GPS/Voice spam loop
+  - [ ] Test core journey flow
+  - [ ] Verify SOS triggers
+  - [ ] Validate AI risk scoring
+  - [ ] Confirm PWA installability

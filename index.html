@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#7C3AED" />
+  <meta name="description" content="SafeRoute – AI-powered travel safety companion for women. Real-time GPS monitoring, smart halt detection, and emergency SOS." />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="SafeRoute" />
+  <title>SafeRoute – AI Travel Safety Companion</title>
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" type="image/png" href="/icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <!-- App Styles -->
+  <link rel="stylesheet" href="/src/styles/main.css" />
+  <link rel="stylesheet" href="/src/styles/components.css" />
+  <script>
+    window.onerror = function(msg, url, line) {
+        alert("Error: " + msg + "\nURL: " + url + "\nLine: " + line);
+        return false;
+    };
+    window.addEventListener('unhandledrejection', function(event) {
+        alert("Unhandled Promise Rejection: " + event.reason);
+    });
+  </script>
+</head>
+<body>
+  <div id="app-root">
+    <!-- Splash Screen -->
+    <div id="splash-screen" class="splash">
+      <div class="splash-content">
+        <div class="splash-icon">
+          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M32 4C20.954 4 12 12.954 12 24C12 36 32 60 32 60C32 60 52 36 52 24C52 12.954 43.046 4 32 4Z" fill="url(#shieldGrad)"/>
+            <path d="M24 24L29 29L40 18" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <defs>
+              <linearGradient id="shieldGrad" x1="12" y1="4" x2="52" y2="60" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#E879F9"/>
+                <stop offset="1" stop-color="#7C3AED"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <h1 class="splash-title">SafeRoute</h1>
+        <p class="splash-sub">AI Travel Safety Companion</p>
+        <div class="splash-loader">
+          <div class="splash-loader-bar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="main-app" class="hidden">
+      <!-- Screen Container -->
+      <div id="screen-container"></div>
+
+      <!-- Bottom Navigation -->
+      <nav id="bottom-nav" class="bottom-nav">
+        <button class="nav-btn active" data-screen="home" aria-label="Home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9,22 9,12 15,12 15,22"/>
+          </svg>
+          <span>Home</span>
+        </button>
+        <button class="nav-btn" data-screen="journey" aria-label="Journey">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polygon points="10,8 16,12 10,16 10,8"/>
+          </svg>
+          <span>Journey</span>
+        </button>
+        <button class="nav-btn nav-btn-sos" data-screen="sos" aria-label="SOS Emergency">
+          <span class="sos-label">SOS</span>
+        </button>
+        <button class="nav-btn" data-screen="safezones" aria-label="Safe Zones">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+          <span>Safe Zones</span>
+        </button>
+        <button class="nav-btn" data-screen="settings" aria-label="Settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+          <span>Settings</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="modal-overlay hidden">
+      <div class="modal-sheet">
+        <div class="auth-header">
+          <div class="auth-logo">
+            <svg viewBox="0 0 64 64" fill="none">
+              <path d="M32 4C20.954 4 12 12.954 12 24C12 36 32 60 32 60C32 60 52 36 52 24C52 12.954 43.046 4 32 4Z" fill="url(#ag2)"/>
+              <path d="M24 24L29 29L40 18" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <defs><linearGradient id="ag2" x1="12" y1="4" x2="52" y2="60" gradientUnits="userSpaceOnUse"><stop stop-color="#E879F9"/><stop offset="1" stop-color="#7C3AED"/></linearGradient></defs>
+            </svg>
+          </div>
+          <h2>Welcome to SafeRoute</h2>
+          <p>Sign in to protect your journey</p>
+        </div>
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tab-signin">Sign In</button>
+          <button class="auth-tab" id="tab-signup">Sign Up</button>
+        </div>
+        <form id="auth-form">
+          <div id="signup-name-field" class="form-group hidden">
+            <label for="auth-name">Full Name</label>
+            <input type="text" id="auth-name" placeholder="Your name" autocomplete="name" />
+          </div>
+          <div class="form-group">
+            <label for="auth-email">Email</label>
+            <input type="email" id="auth-email" placeholder="you@example.com" autocomplete="email" required />
+          </div>
+          <div class="form-group">
+            <label for="auth-password">Password</label>
+            <input type="password" id="auth-password" placeholder="••••••••" autocomplete="current-password" required />
+          </div>
+          <div id="auth-error" class="auth-error hidden"></div>
+          <button type="submit" class="btn-primary btn-full" id="auth-submit">Sign In</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Safety Alert Modal -->
+    <div id="safety-alert-modal" class="modal-overlay hidden">
+      <div class="modal-sheet safety-modal">
+        <div class="safety-icon-wrap">
+          <div class="safety-pulse-ring"></div>
+          <svg viewBox="0 0 48 48" fill="none" class="safety-icon-svg">
+            <circle cx="24" cy="24" r="24" fill="#FEF3C7"/>
+            <path d="M24 14v12M24 30v2" stroke="#F59E0B" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3 id="alert-title">You've stopped for a while</h3>
+        <p id="alert-message">Are you safe? Please confirm your status.</p>
+        <div id="alert-counter" class="alert-counter hidden"></div>
+        <div class="safety-actions">
+          <button class="btn-safe" id="btn-im-safe">✓ Yes, I'm Safe</button>
+          <button class="btn-danger" id="btn-need-help">⚠ Need Help – SOS</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast-container" class="toast-container"></div>
+  </div>
+
+  <script type="module" src="/src/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(reg => {
+          console.log('[SW] Registered:', reg.scope);
+        }).catch(err => {
+          console.warn('[SW] Registration failed:', err);
+        });
+      });
+    }
+  </script>
+</body>
+</html>
