@@ -15,7 +15,7 @@ Automatically detects if you've stopped for an unusual amount of time during a j
 ### 🧠 AI Risk Scoring
 Analyzes your current travel metrics (time of day, location, deviations, speed) using Groq AI. 
 - Provides dynamic, real-time risk scores.
-- Contextualizes environmental factors and automatically adjusts your journey's active safety parameters.
+- Contextualizes environmental factors and automatically adjust your journey's active safety parameters.
 
 ### 🚨 Emergency SOS System
 Immediate, multi-faceted emergency response system:
